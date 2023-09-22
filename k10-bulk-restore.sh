@@ -119,6 +119,27 @@ createRestoreAction()
           targetNamespace: $ns
           # we exclude the storage class
           filters:
+            includeResources:
+              - group: ""
+                version: ""
+                resource: rolebindings
+                name: ""
+                matchExpressions: []
+              - group: ""
+                version: ""
+                resource: resourcequotas
+                name: ""
+                matchExpressions: []
+              - group: ""
+                version: ""
+                resource: limitranges
+                name: ""
+                matchExpressions: []
+              - group: ""
+                version: ""
+                resource: rolebindings
+                name: ""
+                matchExpressions: []
             exludeResources:
               - group: storage.k8s.io
                 resource: storageclasses
