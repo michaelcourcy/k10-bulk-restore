@@ -1,4 +1,11 @@
+## Fork from the k10-bulk-restore
+
+this project is a fork of https://github.com/smohandass/k10-bulk-restore. 
+
+In this fork we only restore namespace, role, rolebinding, quota and limirange to allow application teams to access their namespaces in the Kasten UI and finish the restore of their applaication.
+
 # Kasten Bulk Restore
+
 
 This repository contains the script to perform a bulk restore of namespaces using Kasten k10.
 
