@@ -1,8 +1,8 @@
-## Fork from the k10-bulk-restore
+## Fork from the k10-bulk-restore Mohandass project
 
 this project is a fork of https://github.com/smohandass/k10-bulk-restore. 
 
-In this fork we only restore namespace, role, rolebinding, quota and limirange to allow application teams to access their namespaces in the Kasten UI and finish the restore of their applaication.
+In this fork we only restore namespaces, roles, rolebindings, quotas and limitranges to allow application teams to access their namespaces in the Kasten UI and finish the restore of their application.
 
 # Kasten Bulk Restore
 
