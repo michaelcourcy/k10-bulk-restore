@@ -38,7 +38,6 @@ Parameters:
 
 -n (Required) Specifies the namespaces to be restored. Multiple namespaces can be provided separated by comma.
 
--s (Optional) Specifies the name of the storageclass to be used for restore. If the storage class doesn't exist the script will abort.
 
 -t (Optional) Specifies the timeout value in seconds. The script will check for status of restored namespaces and report until this timeout is reached. If not specified, the timeout will default to 1 Hr.
 
