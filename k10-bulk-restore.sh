@@ -1,6 +1,5 @@
 #!/bin/sh
 
-unset -v storageclass namespace
 no_args="true"
 declare -a restored_namespaces=()
 
@@ -41,26 +40,13 @@ print_error()
 usageFunction()
 {
    print_error "Error - Invalid parameters passed to the script"
-   print_error "Usage: $0 -n <namespaces to restore> [-s storageclass]  [-t timeout] "
+   print_error "Usage: $0 -n <namespaces to restore>  [-t timeout] "
    print_error "-n (required) specifies the namespaces to be restored. Multiple namespaces can be provided separated by comma"
-   print_error "-s (optional) specifies the name of the storageclass to be used for restore"
    print_error "-t (optional) specifies the timeout value in seconds. The script will check for status of restored namespaces until this timeout is reached"
    exit 1
 }
 
 # Validate if the provided storage class exist on the k8s cluster
-validateStorageClass()
-{
-  if [ $storageclass ]
-  then
-     print_heading "Validating storage class...."
-     if [ `kubectl get sc $storageclass --no-headers 2>/dev/null | wc -l ` -eq 0 ]
-     then
-        print_error "Error - Provided Storage Class $storageclass does NOT exist on the cluster. Exiting"
-        exit 1
-     fi
-  fi
-}
 
 # Creates a Namespace if one doesn't exist on the k8s cluster
 createNamespace()
@@ -102,9 +88,8 @@ createRestoreAction()
 {
    print_info "Creating RestoreAction for Namespace $ns"
    restorepointname=`kubectl get restorepoint -n $ns --no-headers | awk 'NR==1{print $1}'`
-   if [ $storageclass ]
-    then
-        cat <<EOF | kubectl create -f - 
+   
+   cat <<EOF | kubectl create -f - 
         kind: RestoreAction
         apiVersion: actions.kio.kasten.io/v1alpha1
         metadata:
@@ -139,27 +124,8 @@ createRestoreAction()
                 version: ""
                 resource: roles
                 name: ""
-                matchExpressions: []
-            exludeResources:
-              - group: storage.k8s.io
-                resource: storageclasses          
+                matchExpressions: []        
 EOF
-     else
-        cat <<EOF  | kubectl create -f -  
-        kind: RestoreAction
-        apiVersion: actions.kio.kasten.io/v1alpha1
-        metadata:
-          generateName: restoreaction-$ns-
-          namespace: $ns
-        spec:
-          subject:
-            apiVersion: apps.kio.kasten.io/v1alpha1
-            kind: RestorePoint
-            name: $restorepointname
-            namespace: $ns
-          targetNamespace: $ns
-EOF
-   fi
 restored_namespaces+=($ns)   
 }
 
@@ -250,9 +216,7 @@ fi
 while getopts s:n:t: flag 
 do
     case "${flag}"
-        in
-        s) storageclass=${OPTARG}
-           ;;
+        in        
         n) namespace=$(echo ${OPTARG}|sed -e 's/,/ /g')
            ;;
         t) global_timeout=${OPTARG}
@@ -282,7 +246,7 @@ else
    print_info "Restore will run on kubernetes cluster: $target_cluster_name"
 fi
 
-validateStorageClass
+
 bulkRestore 
 
 # Check the status of the restored namespaces
