@@ -137,20 +137,12 @@ createRestoreAction()
                 matchExpressions: []
               - group: ""
                 version: ""
-                resource: rolebindings
+                resource: roles
                 name: ""
                 matchExpressions: []
             exludeResources:
               - group: storage.k8s.io
-                resource: storageclasses
-          transforms:
-            - subject:
-                resource: persistentvolumeclaims
-              name: changeStorageClass
-              json:
-                - op: replace
-                  path: /spec/storageClassName
-                  value: $storageclass
+                resource: storageclasses          
 EOF
      else
         cat <<EOF  | kubectl create -f -  
